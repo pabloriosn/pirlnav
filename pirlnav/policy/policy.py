@@ -4,6 +4,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 import abc
+import torch
 
 from habitat import logger
 from habitat_baselines.rl.ppo import Policy
@@ -55,6 +56,9 @@ class ILPolicy(nn.Module, Policy):
         deterministic=False,
         return_distribution=False,
     ):
+        observations['compass'] = torch.zeros(1, dtype=torch.float32, device='cuda:0')
+        observations['gps'] = torch.zeros(1, 2, dtype=torch.float32, device='cuda:0')
+
         features, rnn_hidden_states = self.net(
             observations, rnn_hidden_states, prev_actions, masks
         )

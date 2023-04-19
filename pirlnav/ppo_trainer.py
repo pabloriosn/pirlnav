@@ -5,6 +5,7 @@ import time
 from collections import defaultdict, deque
 from typing import Any, Dict, List
 
+import cv2
 import numpy as np
 import torch
 import torch.nn as nn
@@ -639,10 +640,11 @@ class PIRLNavPPOTrainer(PPOTrainer):
 
         pbar = tqdm.tqdm(total=number_of_eval_episodes)
         self.actor_critic.eval()
-        while (
-            len(stats_episodes) < number_of_eval_episodes
-            and self.envs.num_envs > 0
-        ):
+
+        # value = []
+        # i_ = 0
+
+        while len(stats_episodes) < number_of_eval_episodes and self.envs.num_envs > 0:
             current_episodes = self.envs.current_episodes()
 
             with torch.no_grad():
@@ -656,7 +658,7 @@ class PIRLNavPPOTrainer(PPOTrainer):
                     test_recurrent_hidden_states,
                     prev_actions,
                     not_done_masks,
-                    deterministic=False,
+                    deterministic=True,
                 )
 
                 prev_actions.copy_(actions)  # type: ignore
@@ -672,6 +674,16 @@ class PIRLNavPPOTrainer(PPOTrainer):
                 ]
             else:
                 step_data = [a.item() for a in actions.to(device="cpu")]
+
+            # if i_ < 10:
+            #     path = f"imgs/ep" + str(current_episodes[0].episode_id)
+            #     if not os.path.exists(path):
+            #         os.makedirs(path)
+            #
+            #     cv2.imwrite(path + "/" + str(i_) + ".png", batch["rgb"].cpu().numpy().squeeze())
+            #     value.append(step_data)
+            #
+            #     i_ = i_ + 1
 
             outputs = self.envs.step(step_data)
 
@@ -707,6 +719,9 @@ class PIRLNavPPOTrainer(PPOTrainer):
 
                 # episode ended
                 if not not_done_masks[i].item():
+                    # i_ = 0
+                    # value = []
+
                     pbar.update()
                     episode_stats = {
                         "reward": current_episode_reward[i].item()

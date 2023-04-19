@@ -6,7 +6,7 @@ export HABITAT_SIM_LOG=quiet
 
 config="configs/experiments/rl_ft_objectnav.yaml"
 
-DATA_PATH="data/datasets/objectnav/objectnav_hm3d/objectnav_hm3d_v1/"
+DATA_PATH="data/datasets/objectnav/hm3d/v1/"
 TENSORBOARD_DIR="tb/objectnav_il_rl_ft/ovrl_resnet50/seed_1/"
 EVAL_CKPT_PATH_DIR="model/objectnav_rl_ft_hd.ckpt"
 
