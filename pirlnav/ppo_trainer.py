@@ -679,8 +679,7 @@ class PIRLNavPPOTrainer(PPOTrainer):
             #     path = f"imgs/ep" + str(current_episodes[0].episode_id)
             #     if not os.path.exists(path):
             #         os.makedirs(path)
-            #
-            #     cv2.imwrite(path + "/" + str(i_) + ".png", batch["rgb"].cpu().numpy().squeeze())
+            #     cv2.imwrite(path + "/" + str(i_) + ".png", observations[0]["rgb"][..., ::-1])
             #     value.append(step_data)
             #
             #     i_ = i_ + 1
